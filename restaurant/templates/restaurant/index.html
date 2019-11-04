@@ -1,0 +1,30 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        {% load static %}>CWK2:RESTAURANT APP</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> 
+        <!-- this is to allow JQuery into the file -->
+        <link rel=”stylesheet” href= "{% static 'app.css' %}">
+    </head>
+    <body>
+            <div class="container">
+                    {% if meals %}
+                    <ul>
+                    {% for meal in meals %}
+                        <li><a href="/restaurant/{{ meal.id }}/">{{ meal.id }}</a></li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No meals have been ordered.</p>
+                {% endif %}
+                <button id="buttonA">ButtonA</button>
+                <script>
+                    
+                </script>
+            </div> 
+    </body>
+       
+</html>
+
+
