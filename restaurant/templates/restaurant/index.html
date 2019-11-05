@@ -41,7 +41,7 @@
                         <br>
                             Meal owner:<input type="text" name="meal-owner">
                             <br>
-                            Date and Time:<input type="datetime-local" name ="date-time">
+                            <!-- Date and Time:<input type="datetime-local" name ="date-time"> -->
                             <br>
                             Total Cost:<input type="" name="total-cost">
                             <br>
@@ -62,13 +62,13 @@
                         console.log("this button worked");
                         $.ajax(
                             {
-                                url: "{% url 'list of meals' %}",
+                                url: "{% url 'meals' %}",
                                 success: (data)=>{
                                     // console.log(data.meals);
                                     //success function for what happens when the ajax request works
                                     for (let i=0;i<data.meals.length;i++) //for each meal item in the response
                                     {
-                                        $("#meallist").append("<li>" + data.meals[i].meal_owner+ "</li>")
+                                        $("#meallist").append("<li id=" + data.meals[i].id + ">" + data.meals[i].meal_owner+ "</li>")
                                     }
                                 },
                                 error :  ()=>{
@@ -85,11 +85,16 @@
                     $("#addMeal").click(()=>{
                 console.log("this button worked");
                $.ajax({
-                url: "{% url 'add meal' %}",
+                url: "{% url 'meals' %}",
                 method: "POST",
                 data: $("#newmealform").serializeArray(),
-                success: ()=>{
-
+                success: (data)=>{
+                        //empty list then append
+                        console.log(data)
+                        //$('#meallist').empty()
+                        {
+                        $("#meallist").append("<li id=" + data.meal_owner.id + ">" + data.meal_owner+ "</li>")
+                        }
                 } ,
                 error :  ()=>{
                 console.log ('something went wrong')

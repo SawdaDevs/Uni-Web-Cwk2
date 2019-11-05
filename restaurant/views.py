@@ -17,15 +17,23 @@ def index(request):
     return render(request,'restaurant/index.html', {
         'meal': Meal.objects.all()
     })
-def view_meals(request):
-    return JsonResponse({
-        'meals': list(Meal.objects.values()) #list of dictionaries, dictionaries being key values eg name: Sawda. A list of them being like a Json Payload 
-    })
-def add_meal(request):
-    ml = request.POST['meal-owner']
-    new_ml = Meal(meal_owner=ml)
-    new_ml.save()
-    return JsonResponse({
+
+def meals(request):
+    if request.method == 'POST':
+        ml = request.POST['meal-owner']
+        new_ml = Meal(meal_owner=ml)
+        new_ml.save()
+        return JsonResponse({
         'id': new_ml.id,
         'meal_owner' : new_ml.meal_owner
-    })
+        })
+    if request.method == 'GET':
+        return JsonResponse({
+        'meals': list(Meal.objects.values()) #list of dictionaries, dictionaries being key values eg name: Sawda. A list of them being like a Json Payload 
+        })
+    if request.method =='PUT':
+        ...
+    if request.method == 'DELETE':
+        ...        
+
+

@@ -1,6 +1,7 @@
 from django.db import models
 import time
 import datetime
+from django.utils import timezone
 
 class Food(models.Model):
     food_name = models.CharField (max_length = 200)
@@ -19,7 +20,7 @@ class Beverage(models.Model):
 class Meal(models.Model):
     x = datetime.datetime.now()
     meal_owner = models.CharField(max_length=100, default = 'a Pyfood customer:'+ x.isoformat())
-    pub_date = models.DateTimeField('date published' ,default = x.isoformat() )
+    pub_date = models.DateTimeField('date published', default=timezone.now)
     total_cost = models.DecimalField(max_digits = 4, decimal_places =2, default= 3.00)
     feedback = models.TextField(max_length = 1000, default='average')
     food_choice = models.ForeignKey(Food, on_delete=models.CASCADE, default =1)

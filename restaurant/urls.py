@@ -4,6 +4,5 @@ from . import views
 
 urlpatterns = [
     path('',views.index, name='index'), #(,view function in views.py,name of)
-    path('meals.json', views.view_meals, name = 'list of meals'),
-    path('add_meal/',views.add_meal, name= 'add meal')
+    path('meals/', views.meals, name = 'meals'),
 ]
