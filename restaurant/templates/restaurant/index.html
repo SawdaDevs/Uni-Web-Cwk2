@@ -2,29 +2,104 @@
 <!DOCTYPE html>
 <html>
     <head>
-        {% load static %}>CWK2:RESTAURANT APP</title>
+        
+        <title>CWK2:RESTAURANT APP</title>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> 
-        <!-- this is to allow JQuery into the file -->
+        <!-- this is to allow JQuery -->
+        {% load static %}
         <link rel=”stylesheet” href= "{% static 'app.css' %}">
     </head>
     <body>
-            <div class="container">
-                    {% if meals %}
+           <h1>Restaurant App</h1>
+                
+                <div class="container1">
+                    <h2>Meals Ordered:</h2> 
+                    <ul id="meallist">
+                        <!-- enter python for making list -->
+                         
+                    </ul>
+                    <!-- {% if meals %}
                     <ul>
                     {% for meal in meals %}
-                        <li><a href="/restaurant/{{ meal.id }}/">{{ meal.id }}</a></li>
+                        <li><a href="/restaurant/{{ meal.name }}/">{{ meal.meal_owner}}</a></li>
                     {% endfor %}
                     </ul>
-                {% else %}
+                    {% else %}
                     <p>No meals have been ordered.</p>
-                {% endif %}
-                <button id="buttonA">ButtonA</button>
+                    {% endif %} -->
+                
+
+                <button id="FetchMeals"> Get Meals</button>
+                <br>
+                <br>
+                <br>
+                <br>
+                <div id="container2">
+                    <form id="newmealform">
+                        {% csrf_token %}
+                        <h3>Enter Meal details:</h3>
+                        <br>
+                            Meal owner:<input type="text" name="meal-owner">
+                            <br>
+                            Date and Time:<input type="datetime-local" name ="date-time">
+                            <br>
+                            Total Cost:<input type="" name="total-cost">
+                            <br>
+                            Feedback:<input type="text" name="feedback">
+                            <br>
+                            Food Choice: <input type="radio" name="food-choice" >
+                            <!-- create a radio button for each food-->
+                            <br>
+                            Drink Choice:<input type="radio"name="bev-choice">
+                            <!-- create a radio button for each beverage-->
+                            <br>
+                    </form>
+                    <button id = "addMeal">AddMeal</button>
+                </div>
                 <script>
+                $( () =>{
+                    $("#FetchMeals").click(()=>{
+                        console.log("this button worked");
+                        $.ajax(
+                            {
+                                url: "{% url 'list of meals' %}",
+                                success: (data)=>{
+                                    // console.log(data.meals);
+                                    //success function for what happens when the ajax request works
+                                    for (let i=0;i<data.meals.length;i++) //for each meal item in the response
+                                    {
+                                        $("#meallist").append("<li>" + data.meals[i].meal_owner+ "</li>")
+                                    }
+                                },
+                                error :  ()=>{
+                                    console.log ('something went wrong')
+                                   $("#container").append("<p>" +  "something went wrong!" + "</p>"); 
+                                }
+
+                            }
+
+                        )
+                    })
+                })
+                $(
+                    $("#addMeal").click(()=>{
+                console.log("this button worked");
+               $.ajax({
+                url: "{% url 'add meal' %}",
+                method: "POST",
+                data: $("#newmealform").serializeArray(),
+                success: ()=>{
+
+                } ,
+                error :  ()=>{
+                console.log ('something went wrong')
+                //an alert messag? followed by clearing everything?                             
+                }
+                })
+                })
+                )
                     
                 </script>
             </div> 
-    </body>
-       
+    </body>      
 </html>
-
-

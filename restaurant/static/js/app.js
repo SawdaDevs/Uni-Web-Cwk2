@@ -1,7 +1,7 @@
 import $ from "jquery";
 
 $( function() {
-    $("ButtonA").click(()=>{
+    $("#buttonA").click(()=>{
         console.log("this button worked");
         // $.ajax(
         //     {

@@ -1,7 +1,9 @@
 from django.urls import path
 from . import views
+# import restaurant from views
 
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('meals.json', views.index, name='index') #(entry,view function in views.py,name of path to be used elsewhere)
+    path('',views.index, name='index'), #(,view function in views.py,name of)
+    path('meals.json', views.view_meals, name = 'list of meals'),
+    path('add_meal/',views.add_meal, name= 'add meal')
 ]
