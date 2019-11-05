@@ -67,9 +67,16 @@
                                     // console.log(data.meals);
                                     //success function for what happens when the ajax request works
                                     for (let i=0;i<data.meals.length;i++) //for each meal item in the response
-                                    {
+                                    {  
                                         $("#meallist").append("<li id=" + data.meals[i].id + ">" + data.meals[i].meal_owner+ "</li>")
+                                        .append("<input type='text' id='something to do with the meal that's returned'/>")
+                                        .append("<button>Edit</button>")
+                                        .append("<button id" + data.meals[i].id +"class='delete-button'> Delete " + data.meals[i].meal_owner + "</button><br>")
+                                        
+                                        //make class delete class?
+                                        //pass id in and delete meal of that ID
                                     }
+
                                 },
                                 error :  ()=>{
                                     console.log ('something went wrong')
@@ -102,6 +109,20 @@
                 }
                 })
                 })
+                )
+                $(
+                    $("#delete-button").click(()=>{
+                        console.log('this is going to work!')
+                        //maybe get "delete button + id"
+                        //can you have dynamic ids? ie delete buttton 1, etc etc
+                        //maybe out everything in a div, and delte that div
+                    })
+                )
+                $(
+                    $("#edit").click(()=>{
+                        console.log('this is going to edit something')
+
+                    })
                 )
                     
                 </script>
