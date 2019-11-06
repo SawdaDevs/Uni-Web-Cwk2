@@ -18,17 +18,6 @@
                         <!-- enter python for making list -->
                          
                     </ul>
-                    <!-- {% if meals %}
-                    <ul>
-                    {% for meal in meals %}
-                        <li><a href="/restaurant/{{ meal.name }}/">{{ meal.meal_owner}}</a></li>
-                    {% endfor %}
-                    </ul>
-                    {% else %}
-                    <p>No meals have been ordered.</p>
-                    {% endif %} -->
-                
-
                 <button id="FetchMeals"> Get Meals</button>
                 <br>
                 <br>
@@ -57,74 +46,138 @@
                     <button id = "addMeal">AddMeal</button>
                 </div>
                 <script>
-                $( () =>{
+                    const fetchmeals = ()=>{
+                                        $.ajax({
+                                            url: "{% url 'meals' %}",
+                                            success: (data)=>{
+                                                // console.log(data.meals);
+                                                //success function for what happens when the ajax request works
+                                                //console.log(data.meals[0]);
+                                                for (let i=0;i<data.meals.length;i++) //for each meal item in the response
+                                                {  
+                                                    $("#meallist").append("<li id=" + data.meals[i].id + ">" + data.meals[i].meal_owner+ "</li>")
+                                                    .append("<form id='new-name'><input type='text' name='meal-owner'></form>")
+                                                    .append("<button class='edit-button' id=" + data.meals[i].id+ ">Edit Meal item</button>" )
+                                                    .append("<br><button id=" + data.meals[i].id  + "  class='delete-button'> Delete " + data.meals[i].meal_owner + "</button><br>")
+                                                }
+                                            }
+                                        })};
+                    
+                $(document).ready(function(){
                     $("#FetchMeals").click(()=>{
                         console.log("this button worked");
-                        $.ajax(
-                            {
-                                url: "{% url 'meals' %}",
-                                success: (data)=>{
-                                    // console.log(data.meals);
-                                    //success function for what happens when the ajax request works
-                                    for (let i=0;i<data.meals.length;i++) //for each meal item in the response
-                                    {  
-                                        $("#meallist").append("<li id=" + data.meals[i].id + ">" + data.meals[i].meal_owner+ "</li>")
-                                        .append("<input type='text' id='something to do with the meal that's returned'/>")
-                                        .append("<button>Edit</button>")
-                                        .append("<button id" + data.meals[i].id +"class='delete-button'> Delete " + data.meals[i].meal_owner + "</button><br>")
-                                        
-                                        //make class delete class?
-                                        //pass id in and delete meal of that ID
-                                    }
-
-                                },
-                                error :  ()=>{
-                                    console.log ('something went wrong')
-                                   $("#container").append("<p>" +  "something went wrong!" + "</p>"); 
+                        $.ajax({
+                            url: "{% url 'meals' %}",
+                            success: (data)=>{
+                                // console.log(data.meals);
+                                //success function for what happens when the ajax request works
+                                //console.log(data.meals[0]);
+                                for (let i=0;i<data.meals.length;i++) //for each meal item in the response
+                                { 
+                                    $("#meallist").append("<li id=" + data.meals[i].id + ">" + data.meals[i].meal_owner+ "</li>")
+                                    .append("<form id='new-name'><input type='text' name='meal-owner'></form>")
+                                    .append("<button class='edit-button' id=" + data.meals[i].id+ ">Edit Meal item</button>" )
+                                    .append("<br><button id=" + data.meals[i].id  + "  class='delete-button'> Delete " + data.meals[i].meal_owner + "</button><br>")
+                                    
+                                    //make class delete class?
+                                    //pass id in and delete meal of that ID
                                 }
+                                $(".delete-button").on("click", function() {
+                                    console.log(this.id);
+                                    const id = this.id;
+                                    $.ajax({
+                                        url: "{% url 'meals-change' %}",
+                                        method:"DELETE",
+                                        data: { 'id' : id },
+                                        success: ()=>{
+                                            //success method
+                                            alert("this delete did work");
+                                            $('#meallist').empty()
+                                            fetchmeals();
+                                        },
+                                        error: ()=>{
+                                            alert("this delete did not work");
+                                        }
 
+                                    })
+                                })
+                                $(".edit-button").on("click", function(){
+                                    console.log(this.id);
+                                    const id = this.id;
+                                    // name will be new name from edit-name-type
+                                    name = $("#new-name").serialize().replace('meal-owner=','');
+                                    //console.log("value:" +name);
+                                    
+                                    $.ajax({
+                                        url: "{% url 'meals-change' %}",
+                                        method:"PUT",
+                                        data: { 
+                                            'id' : id,
+                                            'name': name
+                                    },
+                                        success: ()=>{
+                                            //success method
+                                            alert("this edit did work");
+                                            $('#meallist').empty()
+                                            fetchmeals();
+                                        },
+                                        error: ()=>{
+                                            alert("this delete did not work");
+                                        }
+
+                                    })
+
+                                })
+                            },
+                            error :  ()=>{
+                                console.log ('something went wrong')
+                                $("#container").append("<p>" +  "something went wrong!" + "</p>"); 
                             }
+                        })
+                    })
 
-                        )
-                    })
-                })
-                $(
-                    $("#addMeal").click(()=>{
-                console.log("this button worked");
-               $.ajax({
-                url: "{% url 'meals' %}",
-                method: "POST",
-                data: $("#newmealform").serializeArray(),
-                success: (data)=>{
-                        //empty list then append
-                        console.log(data)
-                        //$('#meallist').empty()
-                        {
-                        $("#meallist").append("<li id=" + data.meal_owner.id + ">" + data.meal_owner+ "</li>")
-                        }
-                } ,
-                error :  ()=>{
-                console.log ('something went wrong')
-                //an alert messag? followed by clearing everything?                             
-                }
-                })
-                })
-                )
-                $(
-                    $("#delete-button").click(()=>{
-                        console.log('this is going to work!')
-                        //maybe get "delete button + id"
-                        //can you have dynamic ids? ie delete buttton 1, etc etc
-                        //maybe out everything in a div, and delte that div
-                    })
-                )
-                $(
-                    $("#edit").click(()=>{
-                        console.log('this is going to edit something')
-
-                    })
-                )
                     
+                })
+
+                $("#addMeal").click(()=>{
+                    console.log("this button worked");
+                    $.ajax({
+                        url: "{% url 'meals' %}",
+                        method: "POST",
+                        data: $("#newmealform").serializeArray(),
+                        success: (data)=>{
+                                //empty list then append
+                                console.log(data)
+                                //$('#meallist').empty()
+                                {
+                                    $("#meallist").append("<li id=" + data.id + ">" + data.meal_owner+ "</li>")
+                                    .append("<form id='new-name'><input type='text' name='meal-owner'></form>")
+                                    .append("<button class='edit-button' id=" + data.id+ ">Edit Meal item</button>" )
+                                    .append("<br><button id=" + data.id  + "  class='delete-button'> Delete " + data.meal_owner + "</button><br>")
+                                }
+                        } ,
+                        error :  ()=>{
+                        console.log ('something went wrong')
+                        //an alert messag? followed by clearing everything?                             
+                    }})
+                 })
+
+     
+               
+                    
+                $(
+                    $("#showmore").click(()=>
+                    {
+                       //show more of each thing
+                    })
+                )
+
+                function deleteHandler(event){
+                    console.log('this is going to work')
+                    console.log(this.id);
+                }
+
+                
                 </script>
             </div> 
     </body>      

@@ -5,4 +5,5 @@ from . import views
 urlpatterns = [
     path('',views.index, name='index'), #(,view function in views.py,name of)
     path('meals/', views.meals, name = 'meals'),
+    path('meals2/',  views.meals_change, name='meals-change')
 ]

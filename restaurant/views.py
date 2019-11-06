@@ -1,8 +1,9 @@
 #view functions go here and will be for each of the things I have.
-from django.http import HttpResponse, JsonResponse #JsonResponse builds JSON resp object 
+from django.http import HttpResponse, JsonResponse, QueryDict #JsonResponse builds JSON resp object 
 from django.shortcuts import render
 from django.template import loader #what does this do...?
 from .models import Meal
+from django.views.decorators.csrf import csrf_exempt
 # def home(request):
 #     return render(request, ''){
 
@@ -31,9 +32,34 @@ def meals(request):
         return JsonResponse({
         'meals': list(Meal.objects.values()) #list of dictionaries, dictionaries being key values eg name: Sawda. A list of them being like a Json Payload 
         })
+
+@csrf_exempt
+def meals_change(request):
     if request.method =='PUT':
-        ...
+        id = int(QueryDict(request.body).get('id'))
+        new_name = QueryDict(request.body).get('name')
+        meal_ch = Meal.objects.get(id = id)
+        meal_ch.meal_owner=new_name
+        print(meal_ch)
+        # meal_ch.name = new_name
+        meal_ch.save() 
+        response = JsonResponse({
+            'result': 'success'
+        })
+        response.status_code = 200
+        return response
+
     if request.method == 'DELETE':
-        ...        
+        id = int(QueryDict(request.body).get('id'))
+        # print(QueryDict(request.body))
+        
+        meal_del.delete()
+        response = JsonResponse({
+            'result': 'success'
+        })
+        response.status_code = 200
+        return response
+    
+      
 
 
