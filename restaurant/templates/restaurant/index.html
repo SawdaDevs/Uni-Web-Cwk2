@@ -12,77 +12,316 @@
     <body>
            <h1>Restaurant App</h1>
                 
-                <div class="container1">
-                    <h2>Meals Ordered:</h2> 
-                    <ul id="meallist">
-                        <!-- enter python for making list -->
-                         
-                    </ul>
-                <button id="FetchMeals"> Get Meals</button>
-                <br>
-                <br>
-                <br>
-                <br>
-                <div id="container2">
+                <div id="container1">
+                     <div id="meals-ordered-list">
+                            <h4>Meals Ordered:</h4> 
+                            <ul id="meallist">
+                            </ul>
+                            <br>
+                            <h4>Foods Available:</h4> 
+                            <ul id="foodlist">
+                            </ul>
+                            <h4>Drinks Available:</h4> 
+                            <ul id="bevlist">
+                            </ul>
+                        <button id="FetchMeals"> Get Meals</button>
+                        <button id="FetchFood"> Get Food</button>
+                        <button id="FetchBev"> Get Drink</button>
+                        <br>
+                        <br>
+                        <br>
+                        <button id="shownewstuff">ShowNew</button>
+                     </div>   
+                    
+                <div hidden id="container2">
+                    
                     <form id="newmealform">
                         {% csrf_token %}
                         <h3>Enter Meal details:</h3>
                         <br>
                             Meal owner:<input type="text" name="meal-owner">
                             <br>
-                            <!-- Date and Time:<input type="datetime-local" name ="date-time"> -->
+                            <!-- Total Cost:<input type="number" name="total-cost"> -->
+                            <!-- maths of food items? -->
                             <br>
-                            Total Cost:<input type="" name="total-cost">
+                            <!-- Feedback:<input type="text" name="feedback"> -->
                             <br>
-                            Feedback:<input type="text" name="feedback">
-                            <br>
-                            Food Choice: <input type="radio" name="food-choice" >
+                            
                             <!-- create a radio button for each food-->
+                            <!-- <input type="radio" name="food" value=""> Male<br>
                             <br>
                             Drink Choice:<input type="radio"name="bev-choice">
-                            <!-- create a radio button for each beverage-->
+                            create a radio button for each beverage -->
                             <br>
                     </form>
                     <button id = "addMeal">AddMeal</button>
-                </div>
+                    <form id="newfoodform">
+                            {% csrf_token %}
+                            <h3>Enter Food details:</h3>
+                            <br>
+                            <!-- name desc cost -->
+                                    Food name:<input type="text" name="food-name">
+                                    Desc:<input type="text" name="food-desc">
+                                    Cost:<input type="number" name="food-cost">
+                        </form>
+                        <button id = "addFood">AddFood</button>
+
+                        <form id="newbevform">
+                                {% csrf_token %}
+                                <h3>Enter Beverage details:</h3>
+                                <br>
+                                    <!-- name desc cost -->
+                                    Bev name:<input type="text" name="bev-name">
+                                    Desc:<input type="text" name="bev-desc">
+                                    Cost:<input type="number" name="bev-cost">
+
+                            </form>
+                            <button id = "addBev">AddBeverage</button>
+                </div >
+                
                 <script>
-                    const fetchmeals = ()=>{
-                                        $.ajax({
-                                            url: "{% url 'meals' %}",
-                                            success: (data)=>{
-                                                // console.log(data.meals);
-                                                //success function for what happens when the ajax request works
-                                                //console.log(data.meals[0]);
-                                                for (let i=0;i<data.meals.length;i++) //for each meal item in the response
-                                                {  
-                                                    $("#meallist").append("<li id=" + data.meals[i].id + ">" + data.meals[i].meal_owner+ "</li>")
-                                                    .append("<form id='new-name'><input type='text' name='meal-owner'></form>")
-                                                    .append("<button class='edit-button' id=" + data.meals[i].id+ ">Edit Meal item</button>" )
-                                                    .append("<br><button id=" + data.meals[i].id  + "  class='delete-button'> Delete " + data.meals[i].meal_owner + "</button><br>")
-                                                }
+                    //button to create form
+                    $("#shownewstuff").click(()=>{
+
+                       $("#container2").show();
+                       $.ajax({
+                            url: "{% url 'food' %}",
+                            success: (data)=>{
+                                for(let i =0;i<data.food.length;i++){
+                                    // console.log(data.food[0].id);
+                                    $("#newmealform").append("Food Choice:" +data.food[0].food_name+" <input type='radio' name=" + data.food[0].id  +">");
+                                } 
+                            }
+                        })
+                        $.ajax({
+                            url: "{% url 'bev' %}",
+                            success: (data)=>{
+                                for(let i =0;i<data.bev.length;i++){
+                                    // console.log(data.food[0].id);
+                                    $("#newmealform").append("Bev Choice:" +data.bev[0].bev_name+" <input type='radio' name=" + data.bev[0].id  +">");
+                                } 
+                            }
+                        })
+
+                       
+
+                    })
+                
+                        
+                
+                const fetchmeals = ()=>{
+                                    $.ajax({
+                                        url: "{% url 'meals' %}",
+                                        success: (data)=>{
+                                        
+                                            for (let i=0;i<data.meals.length;i++) //for each meal item in the response
+                                            {  
+                                                $("#meallist").append("<li id=" + data.meals[i].id + ">" + data.meals[i].meal_owner+ "</li>")
+                                                .append("<form id='new-meal-name'><input type='text' name='meal-owner'></form>")
+                                                .append("<button class='edit-meal-button' id=" + data.meals[i].id+ ">Edit Meal item</button>" )
+                                                .append("<button class='show-more-meal-button' id=" + data.meals[i].id+ ">Show more</button>")
+                                                .append("<br><button id=" + data.meals[i].id  + "  class='delete-meal-button'> Delete " + data.meals[i].meal_owner + "</button><br>")
+                                    
                                             }
-                                        })};
-                    
+                                        }
+                                    })};
+                const fetchfood = ()=>{
+                    $.ajax({
+                            url: "{% url 'food' %}",
+                            success: (data)=>{
+                                for(let i=0;i<data.food.length;i++){
+                                    $("#foodlist").append("<li id=" + data.food[i].id + ">" + data.food[i].food_name+ "</li>")
+                                    .append("<form id='new-food-name'><input type='text' name='food-name'></form>")
+                                    .append("<button class='edit-food-button' id=" + data.food[i].id+ ">Edit Food item</button>" )
+                                    .append("<button class='show-more-food-button' id=" + data.food[i].id+ ">Show more</button>")
+                                    .append("<br><button id=" + data.food[i].id  + "  class='delete-food-button'> Delete " + data.food[i].food_name + "</button><br>")
+                                }
+                            }
+                        })
+                };
+                const fetchbev = ()=>{
+                    $.ajax({
+                            url: "{% url 'bev' %}",
+                            success: (data)=>{
+                                console.log(data);
+                                for(let i=0;i<data.bev.length;i++){
+                                    $("#bevlist").append("<li id=" + data.bev[i].id + ">" + data.bev[i].bev_name + "</li>")
+                                    .append("<form id='new-bev-name'><input type='text' name='bev-name'></form>")
+                                    .append("<button class='edit-bev-button' id=" + data.bev[i].id+ ">Edit Beverage item</button>" )
+                                    .append("<button class='show-more-bev-button' id=" + data.bev[i].id+ ">Show more</button>")
+                                    .append("<br><button id=" + data.bev[i].id  + "  class='delete-bev-button'> Delete " + data.bev[i].bev_name + "</button><br>")
+                                }
+                            }
+                    })
+                };        
+
                 $(document).ready(function(){
+                    $("#FetchFood").click(()=>{
+                        $.ajax({
+                            url: "{% url 'food' %}",
+                            success: (data)=>{
+                                for(let i=0;i<data.food.length;i++){
+                                    $("#foodlist").append("<li id=" + data.food[i].id + ">" + data.food[i].food_name+ "</li>")
+                                    .append("<form id='new-food-name'><input type='text' name='food-name'></form>")
+                                    .append("<button class='edit-food-button' id=" + data.food[i].id+ ">Edit Food item</button>" )
+                                    .append("<button class='show-more-food-button' id=" + data.food[i].id+ ">Show more</button>")
+                                    .append("<br><button id=" + data.food[i].id  + "  class='delete-food-button'> Delete " + data.food[i].food_name + "</button><br>")
+                                }
+                                $(".delete-food-button").on("click", function() {
+                                    console.log(this.id);
+                                    const id = this.id;
+                                    $.ajax({
+                                        url: "{% url 'food-change' %}",
+                                        method:"DELETE",
+                                        data: { 'id' : id },
+                                        success: ()=>{
+                                            //success method
+                                            alert("this delete  for food did work");
+                                            $('#foodlist').empty()
+                                            fetchfood();
+                                        },
+                                        error: ()=>{
+                                            alert("this delete for food did not work");
+                                        }
+
+                                    })
+                                })
+                                $(".edit-food-button").on("click", function(){
+                                    console.log(this.id);
+                                    const id = this.id;
+                                    // name will be new name from edit-name-type
+                                    name = $("#new-food-name").serialize().replace('food-name=','');
+                                    //console.log("value:" +name);
+                                    $.ajax({
+                                        url: "{% url 'food-change' %}",
+                                        method:"PUT",
+                                        data: { 
+                                            'id' : id,
+                                            'name': name
+                                    },
+                                        success: ()=>{
+                                            //success method
+                                            alert("this edit did work for food");
+                                            $('#foodlist').empty()
+                                            fetchfood();
+                                        },
+                                        error: ()=>{
+                                            alert("this delete did not work 4 f");
+                                        }
+
+                                    })
+
+                                })
+                                $(".show-more-food-button").on("click", function (){
+                                    const id = this.id;
+                                    console.log('for show more' + id);
+                                    console.log(data);
+                                    //a for loop to find right index for current object
+                                    let j = 0;
+                                    for (let i =0;i<data.food.length;i++){
+                                        if(data.food[i].id==id){
+                                        j=i;
+                                        }
+                                    }
+                                    $(".more-info").empty();
+                                    $("#container1").append("<h5 class='more-info'>More Info Area</h5><p class='more-info'>  Food name:" + data.food[j].food_name + "<br> Desc:" + data.food[j].food_desc + " ,<br> Food Cost:" + data.food[j].cost+" </p>")
+                                })
+                            },
+                            error:()=>{
+                                alert('something went wrong with fetching food');
+                            }
+                        })
+                    })  
+                    $("#FetchBev").click(()=>{
+                        $.ajax({
+                            url: "{% url 'bev' %}",
+                            success: (data)=>{
+                                console.log(data);
+                                for(let i=0;i<data.bev.length;i++){
+                                    $("#bevlist").append("<li id=" + data.bev[i].id + ">" + data.bev[i].bev_name + "</li>")
+                                    .append("<form id='new-bev-name'><input type='text' name='bev-name'></form>")
+                                    .append("<button class='edit-bev-button' id=" + data.bev[i].id+ ">Edit Beverage item</button>" )
+                                    .append("<button class='show-more-bev-button' id=" + data.bev[i].id+ ">Show more</button>")
+                                    .append("<br><button id=" + data.bev[i].id  + "  class='delete-bev-button'> Delete " + data.bev[i].bev_name + "</button><br>")
+                                }
+                                $(".delete-bev-button").on("click", function() {
+                                    console.log(this.id);
+                                    const id = this.id;
+                                    $.ajax({
+                                        url: "{% url 'bev-change' %}",
+                                        method:"DELETE",
+                                        data: { 'id' : id },
+                                        success: ()=>{
+                                            //success method
+                                            alert("this delete for bev did work");
+                                            $('#bevlist').empty()
+                                            fetchbev();
+                                        },
+                                        error: ()=>{
+                                            alert("this delete for bev did not work");
+                                        }
+
+                                        })
+                                    })
+                                    $(".edit-bev-button").on("click", function(){
+                                    console.log(this.id);
+                                    const id = this.id;
+                                    // name will be new name from edit-name-type
+                                    name = $("#new-bev-name").serialize().replace('bev-name=','');
+                                    console.log("value" +name);
+                                    
+                                    $.ajax({
+                                        url: "{% url 'bev-change' %}",
+                                        method:"PUT",
+                                        data: { 
+                                            'id' : id,
+                                            'name': name
+                                    },
+                                        success: ()=>{
+                                            //success method
+                                            alert("this edit did work");
+                                            $('#bevlist').empty()
+                                            fetchbev();
+                                        },
+                                        error: ()=>{
+                                            alert("this delete did not work");
+                                        }
+                                    })
+                                })
+                                $(".show-more-bev-button").on("click", function (){
+                                    const id = this.id;
+                                    console.log('for show more' + id);
+                                    console.log(data);
+                                    //a for loop to find right index for current object
+                                    let j = 0;
+                                    for (let i =0;i<data.bev.length;i++){
+                                        if(data.bev[i].id==id){
+                                        j=i;
+                                        }
+                                    }
+                                    $(".more-info").empty();
+                                    $("#container1").append("<h5 class='more-info'>More Info Area</h5><p class='more-info'>  Drink name:" + data.bev[j].bev_name + "<br> Desc:" + data.bev[j].bev_desc + " ,<br> Bev Cost:" + data.bev[j].cost+" </p>")
+                                })    
+                                    
+                            }
+                            }
+                        )
+                    })
                     $("#FetchMeals").click(()=>{
-                        console.log("this button worked");
+                        // console.log("this button worked for fetching meals");
                         $.ajax({
                             url: "{% url 'meals' %}",
                             success: (data)=>{
-                                // console.log(data.meals);
-                                //success function for what happens when the ajax request works
-                                //console.log(data.meals[0]);
-                                for (let i=0;i<data.meals.length;i++) //for each meal item in the response
+                                for (let i=0;i<data.meals.length;i++) 
                                 { 
                                     $("#meallist").append("<li id=" + data.meals[i].id + ">" + data.meals[i].meal_owner+ "</li>")
-                                    .append("<form id='new-name'><input type='text' name='meal-owner'></form>")
-                                    .append("<button class='edit-button' id=" + data.meals[i].id+ ">Edit Meal item</button>" )
-                                    .append("<br><button id=" + data.meals[i].id  + "  class='delete-button'> Delete " + data.meals[i].meal_owner + "</button><br>")
+                                    .append("<form id='new-meal-name'><input type='text' name='meal-owner'></form>")
+                                    .append("<button class='edit-meal-button' id=" + data.meals[i].id+ ">Edit Meal item</button>" )
+                                    .append("<button class='show-more-meal-button' id=" + data.meals[i].id+ ">Show more</button>")
+                                    .append("<br><button id=" + data.meals[i].id  + "  class='delete-meal-button'> Delete " + data.meals[i].meal_owner + "</button><br>")
                                     
-                                    //make class delete class?
-                                    //pass id in and delete meal of that ID
                                 }
-                                $(".delete-button").on("click", function() {
+                                $(".delete-meal-button").on("click", function() {
                                     console.log(this.id);
                                     const id = this.id;
                                     $.ajax({
@@ -101,15 +340,15 @@
 
                                     })
                                 })
-                                $(".edit-button").on("click", function(){
+                                $(".edit-meal-button").on("click", function(){
                                     console.log(this.id);
                                     const id = this.id;
                                     // name will be new name from edit-name-type
-                                    name = $("#new-name").serialize().replace('meal-owner=','');
+                                    name = $("#new-meal-name").serialize().replace('meal-owner=','');
                                     //console.log("value:" +name);
                                     
                                     $.ajax({
-                                        url: "{% url 'meals-change' %}",
+                                        url: "{% url 'meals-change' %}",
                                         method:"PUT",
                                         data: { 
                                             'id' : id,
@@ -124,21 +363,53 @@
                                         error: ()=>{
                                             alert("this delete did not work");
                                         }
-
                                     })
-
+                                })
+                                $(".show-more-meal-button").on("click", function (){
+                                    const id = this.id;
+                                    console.log('for show more' + id);
+                                    console.log(data);
+                                    //a for loop to find right index for current object
+                                    let j = 0;
+                                    for (let i =0;i<data.meals.length;i++){
+                                        if(data.meals[i].id==id){
+                                        j=i;
+                                        }
+                                    }
+                                    $(".more-info").empty();
+                                    $("#container1").append("<h5 class='more-info'>More Info Area</h5><p class='more-info'> Meal owner:" + data.meals[j].meal_owner + "<br> Meal Date and time:" + data.meals[j].pub_date + " ,<br> Meal cost" + data.meals[j].total_cost+ ",<br> Feedback:" + data.meals[j].feedback  + ", <br>Food choice:" +  data.meals[j].food_choice + ", <br>Drink choice:" +data.meals[j].drink_choice + " </p>")
                                 })
                             },
                             error :  ()=>{
-                                console.log ('something went wrong')
-                                $("#container").append("<p>" +  "something went wrong!" + "</p>"); 
+                                alert('something went wrong with fetching meals')
                             }
                         })
                     })
+                    //do the get and return the name, do the get and find the id
 
-                    
-                })
+                    $("#addFood").click(()=>{
+                    console.log($("#newfoodform").serializeArray());
+                    $.ajax({
+                        url: "{% url 'food' %}",
+                        method: "POST",
+                        data: $("#newfoodform").serializeArray(),
+                        success: (data)=>{
+                                //empty list then append
+                                console.log(data)
+                                {
 
+                                    $("#foodlist").append("<li id=" + data.id + ">" + data.food_name+ "</li>")
+                                    .append("<form id='new-food-name'><input type='text' name='food-name'></form>")
+                                    .append("<button class='edit-food-button' id=" + data.id+ ">Edit Food item</button>" )
+                                    .append("<button class='show-more-food-button' id=" + data.id+ ">Show more</button>")
+                                    .append("<br><button id=" + data.id  + "  class='delete-food-button'> Delete " + data.food_name + "</button><br>")
+                                }
+                        } ,
+                        error :  ()=>{
+                        console.log ('something went wrong')
+                        //an alert messag? followed by clearing everything?                             
+                            }})
+                        })
                 $("#addMeal").click(()=>{
                     console.log("this button worked");
                     $.ajax({
@@ -146,38 +417,45 @@
                         method: "POST",
                         data: $("#newmealform").serializeArray(),
                         success: (data)=>{
+
+                                {
+
+                                    $("#meallist").append("<li id=" + data.id + ">" + data.meal_owner+ "</li>")
+                                    .append("<form id='new-meal-name'><input type='text' name='meal-owner'></form>")
+                                    .append("<button class='edit-meal-button' id=" + data.id+ ">Edit Meal item</button>" )
+                                    .append("<button class='show-more-meal-button' id=" + data.id+ ">Show more</button>")
+                                    .append("<br><button id=" + data.id  + "  class='delete-meal-button'> Delete " + data.meal_owner + "</button><br>")
+                                }
+                        } ,
+                        error :  ()=>{
+                        console.log ('something went wrong')
+                        //an alert messag? followed by clearing everything?
+}})
+                 })
+                $("#addBev").click(()=>{
+                    console.log("this button worked");
+                    $.ajax({
+                        url: "{% url 'bev' %}",
+                        method: "POST",
+                        data: $("#newbevform").serializeArray(),
+                        success: (data)=>{
                                 //empty list then append
                                 console.log(data)
-                                //$('#meallist').empty()
                                 {
-                                    $("#meallist").append("<li id=" + data.id + ">" + data.meal_owner+ "</li>")
-                                    .append("<form id='new-name'><input type='text' name='meal-owner'></form>")
-                                    .append("<button class='edit-button' id=" + data.id+ ">Edit Meal item</button>" )
-                                    .append("<br><button id=" + data.id  + "  class='delete-button'> Delete " + data.meal_owner + "</button><br>")
+                                     $("#bevlist").append("<li id=" + data.id + ">" + data.bev_name+ "</li>")
+                                    .append("<form id='new-bev-name'><input type='text' name='bev-owner'></form>")
+                                    .append("<button class='edit-bev-button' id=" + data.id+ ">Edit Drink item</button>" )
+                                    .append("<button class='show-more-bev-button' id=" + data.id+ ">Show more</button>")
+                                    .append("<br><button id=" + data.id  + "  class='delete-bev-button'> Delete " + data.bev_name + "</button><br>")
                                 }
                         } ,
                         error :  ()=>{
                         console.log ('something went wrong')
                         //an alert messag? followed by clearing everything?                             
-                    }})
-                 })
-
-     
-               
+                            }})
+                        })
+            })
                     
-                $(
-                    $("#showmore").click(()=>
-                    {
-                       //show more of each thing
-                    })
-                )
-
-                function deleteHandler(event){
-                    console.log('this is going to work')
-                    console.log(this.id);
-                }
-
-                
                 </script>
             </div> 
     </body>      
